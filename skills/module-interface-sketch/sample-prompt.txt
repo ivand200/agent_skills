@@ -1,0 +1,41 @@
+Create a bright, minimal, hand-drawn sketch style architecture diagram.
+White paper background, colorful rounded sticky-note module cards, thick marker arrows.
+Keep text sparse, readable, and professional.
+
+Title: RAG Service: Module Interfaces
+
+Cards/modules:
+1. Workspace API
+   interfaces: GET /api/workspace, /api/workspace
+2. Documents API
+   interfaces: /api/documents
+3. Ingestion worker
+   interfaces: ready
+4. Retrieval service
+   interfaces: owns ready-document search
+5. Chat API and service
+   interfaces: /api/chat, start, token
+6. Auth boundary
+   interfaces: require_current_user, AuthenticatedUser
+7. Frontend API client
+   interfaces: frontend/src/api/client.ts, /src/api/client.ts
+
+Connections with short arrow labels:
+- Frontend API client -> Workspace API: GET /api/workspace
+- Frontend API client -> Documents API: /api/documents
+- Frontend API client -> Chat API and service: /api/chat
+- Frontend API client -> Auth boundary: auth token
+- Chat API and service -> Retrieval service: search evidence
+- Documents API -> Ingestion worker: queued job
+
+Style requirements:
+- not an ERD
+- not database tables
+- no tiny columns
+- no file tree
+- no long paragraphs
+- 5-9 sketch cards
+- one-page overview
+- lots of whitespace
+- labels should be short and legible
+- cheerful but production-minded
