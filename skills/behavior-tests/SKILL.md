@@ -9,11 +9,9 @@ Write tests around observable business behavior, public contracts, and module in
 
 ## Core Rules
 
-- Choose the strongest stable boundary available: API endpoint, command/workflow, service/use-case entry point, exported domain operation, or UI behavior only when it proves business logic.
+- Test observable business behavior through the strongest stable boundary available: API endpoint, command/workflow, service/use-case entry point, exported domain operation, or UI behavior only when it proves business logic.
 - Prove outcomes users, business rules, or callers care about: permissions, validation, status transitions, calculations, error semantics, idempotency, invariants, and visible side effects.
-- Avoid private helpers, method-call order, mock interaction counts, framework behavior, CRUD pass-throughs, storage layout, logs, cache details, and private state.
-- Mock only real external, flaky, or expensive boundaries: time, network, filesystem, database, queues, email, or third-party services.
-- Prefer fakes, fixtures, factories, builders, or harnesses that preserve observable behavior.
+- Avoid implementation and platform details: private helpers, method-call order, mock interaction counts, built-in library/framework behavior, CRUD pass-throughs, storage layout, logs, cache details, and private state.
 
 ## Test Shape
 
@@ -22,6 +20,8 @@ Use Arrange-Act-Assert:
 - Arrange: move setup into fixtures/helpers/builders.
 - Act: exactly one meaningful business action.
 - Assert: 1-2 assertions about the business outcome, returned value, contract status, domain effect, error, or preserved invariant.
+
+Use fakes, fixtures, factories, builders, or harnesses for setup; mock only real external, flaky, or expensive boundaries.
 
 Name tests as business scenarios, e.g. `rejects expired coupons`, not implementation events such as `calls_save_once`.
 
