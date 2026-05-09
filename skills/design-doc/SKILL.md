@@ -21,7 +21,7 @@ Use `architecture-principles`. Manager decides when design is needed and owns ro
 2. Read `context.md` if present.
 3. Read relevant `AGENTS.md`, `CLAUDE.md`, and `steering/` only when present.
 4. Research existing patterns only as needed.
-5. Use `grill-me` if material ambiguity remains.
+5. Use `grill-me` only for blocking or important questions not answerable from artifacts, docs, or targeted repo research.
 6. Write or refresh `design.md`.
 7. Note stale downstream artifacts only when design changes accepted scope or task order.
 

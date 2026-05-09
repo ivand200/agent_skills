@@ -1,35 +1,23 @@
 ---
 name: task-requirements
-description: Create or refine `task.md` with requirements, acceptance criteria, interface facts, and risk facts. Manager owns routing.
+description: Create or refine feature `task.md` with scope, acceptance criteria, interface facts, and risk facts. Manager owns routing.
 ---
 
 # Task Requirements
 
-Create or refresh `tasks/<task-name>/task.md`. Do not write implementation code or source edits.
-
-Capture facts; do not choose workflow route, pass gates, or advance stages.
-
-## Read
-
-- User request first.
-- `AGENTS.md`, `CLAUDE.md`, and `steering/` only when present and relevant.
-- Existing companion artifacts only when refreshing accepted scope.
-- Repository evidence before asking questions.
+Create or refresh `tasks/<task-name>/task.md` for feature work. Do not edit source code or workflow state.
 
 If the request is a defect, regression, broken behavior, failing test, or current-vs-expected report, stop and use `bugfix-spec`.
 
-## Capture
+## Rules
 
-- type: `feature` or `bugfix`
-- scale: `low`, `medium`, or `large`
-- interface impact: `none`, `internal-only`, or `public-contract`
-- risk flags: `auth`, `security`, `privacy`, `money`, `data integrity`, `migration`, `concurrency`, `performance`, `operations`, or `none`
-- review hint: `skip`, `full`, or `unknown`
-- user stories, rules, examples, open questions
-- Given / When / Then acceptance criteria
-- public contract and behavior-test expectations
-
-Use `grill-me` for any questions that you cannot get answers from the repo.
+- Capture facts only; do not choose the workflow route, pass gates, or advance stages.
+- Read the user request first.
+- Read `AGENTS.md`, `CLAUDE.md`, `steering/`, and companion artifacts only when relevant.
+- Inspect repository evidence before asking questions.
+- Use `grill-me` for important questions that repository evidence cannot answer.
+- Keep workflow status in `state.json`, not this artifact.
+- Use the vocabularies shown in the template.
 
 ## Output
 
@@ -40,9 +28,9 @@ Use `grill-me` for any questions that you cannot get answers from the repo.
 
 ...
 
-## Artifact Flag
+## Routing Facts
 
-- type: `feature | bugfix`
+- type: `feature`
 - scale: `low | medium | large`
 - interface impact: `none | internal-only | public-contract`
 - risk flags: `auth | security | privacy | money | data integrity | migration | concurrency | performance | operations | none`
@@ -61,14 +49,13 @@ Use `grill-me` for any questions that you cannot get answers from the repo.
 - Affected module: ...
 - Affected entities: ...
 - Public contract impact: `none | changed | new | unclear`
+- Behavior tests expected: ...
 - Contract tests expected: ...
-- Notes: ...
 
 ## Examples
 
-- **Example 1**
-  - Input / action: ...
-  - Expected result: ...
+- Input / action: ...
+- Expected result: ...
 
 ## Open Questions
 
@@ -82,5 +69,3 @@ Given ...
 When ...
 Then ...
 ```
-
-Keep workflow status in `state.json`, not this artifact.

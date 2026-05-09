@@ -18,12 +18,13 @@ Decision priority:
 ## Rules
 
 - Prefer existing project patterns unless they are causing real pain.
-- Keep related behavior together; split around ownership of design decisions, not processing steps alone.
-- Hide volatile details behind stable interfaces.
+- Design deep modules: keep public interfaces small and stable while hiding volatile details and meaningful complexity.
+- Keep related behavior together; split modules around ownership of design decisions, not processing steps alone.
 - Add abstraction only when it hides real complexity, removes meaningful duplication, protects an external boundary, supports useful fakes, or stabilizes a contract.
-- Prefer small duplication over the wrong abstraction.
-- Avoid speculative hooks, generic layers, pass-through modules, and catch-all services.
-- Watch for coupling: reaching through layers, shared utilities that know many domains, APIs exposing internals, or tests depending on private behavior.
+- Avoid shallow abstractions: speculative hooks, generic layers, pass-through modules, catch-all services, and APIs that expose internals.
+
+## Use When Relevant
+
 - Layering: use `UI / transport -> business logic / use case -> data access / infrastructure` as the default mental model for apps. Keep business decisions out of UI handlers and persistence details out of business workflows.
 - Repository pattern: use when persistence queries are complex, reused, business-significant, need useful test fakes, or hide storage volatility. Avoid pass-through repositories that only rename ORM/database calls.
 
