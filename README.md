@@ -30,20 +30,20 @@ The manager chooses the smallest safe path for each task.
 
 ```text
 low risk:
-task -> implementation -> review? -> verification
+task/brief -> implementation -> verification
 
 medium risk:
-task -> design -> oracle -> tasks -> implementation -> review -> verification
+task -> design with small validation intent -> implementation -> verification
 
-large risk:
-task -> research -> design -> oracle -> tasks -> implementation -> review -> verification
+large or risky:
+task -> research -> design -> oracle-gate -> tasks -> implementation -> verification
 ```
 
-Use `low` for localized, clear, low-risk work.
+Use `low` for tiny, localized, clear work.
 
-Use `medium` when design, validation strategy, or task breakdown would reduce churn.
+Use `medium` when design or small validation intent would reduce churn, but strict oracle proof or task breakdown is not required by default.
 
-Use `large` when current behavior, root cause, module boundaries, data, operations, or integrations need investigation before design.
+Use `large` when current behavior, root cause, module boundaries, data, operations, integrations, or strict proof planning need investigation before implementation.
 
 Planning is approval-gated one step at a time: the manager creates or refreshes one artifact, records state, and stops for engineer approval before moving to the next planning stage.
 
@@ -245,7 +245,3 @@ This workflow is a practical adaptation inspired by existing work in spec-driven
 - [Test Pyramid](https://martinfowler.com/bliki/TestPyramid.html) - Testing strategy background for balancing focused tests, service-level tests, and higher-level validation.
 - [The Oracle Problem in Software Testing: A Survey](https://discovery.ucl.ac.uk/id/eprint/1471263/) - Research background for why defining expected behavior and proof matters in software testing.
 - [Matt Pocock's Skills](https://github.com/mattpocock/skills) - Practical inspiration for packaging reusable AI-agent skills as explicit, shareable instructions.
-
-## Status
-
-This is a portfolio project and a working personal engineering workflow.

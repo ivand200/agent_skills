@@ -11,7 +11,7 @@ Before editing, read the assigned task and accepted artifacts. If the task is to
 
 After that, proceed autonomously inside the approved scope:
 - make ordinary implementation choices
-- edit only required product code and relevant behavior/contract tests
+- edit only required product code and behavior/contract tests; use `behavior-tests` to prefer reusing, rewriting, or parameterizing existing coverage before adding tests
 - run the checks needed to prove the task
 - return concise handoff details for manager/tester
 

@@ -9,13 +9,13 @@ Own one task's workflow state. Choose the smallest safe path, run one step, pers
 
 ## Workflow Paths
 
-- `low`: task -> implementation -> review? -> verification
-- `medium`: task -> decision -> oracle -> tasks -> implementation -> review -> verification
-- `large`: task -> research -> decision -> oracle -> tasks -> implementation -> review -> verification
+- `low`: task/brief -> implementation -> verification
+- `medium`: task -> decision -> implementation -> verification
+- `large`: task -> research -> decision -> oracle -> tasks -> implementation -> verification
 
-- `low`: low risk, localized to one module, no public contract, migration, data, auth, security, privacy, money, concurrency, performance, operations, or external-integration risk.
-- `medium`: design, validation strategy, or a backlog would reduce churn.
-- `large`: current behavior, root cause, scope, boundaries, data, operations, or integrations need research before design.
+- `low`: tiny, localized, clear work. No public contract, migration, data, auth, security, privacy, money, concurrency, performance, operations, or external-integration risk.
+- `medium`: design or small validation intent would reduce churn, but strict oracle proof or task breakdown is not required by default.
+- `large`: risky or unclear work where current behavior, root cause, scope, boundaries, data, operations, integrations, or strict proof planning need investigation before implementation.
 
 Upgrade scale when evidence adds risk; do not downgrade without explaining why.
 
@@ -59,8 +59,8 @@ Statuses: `in-progress`, `pending-approval`, `approved`, `skipped`, `blocked`, `
 
 - Manager is the only writer of `state.json` and `tasks.md`.
 - Run exactly one workflow step at a time.
-- Use `grill-me` before advancing when an important question cannot be answered from artifacts or repo research.
-- Planning artifacts require approval before downstream steps; run `oracle-gate` after design approval and before `breakdown` whenever `decision` is required.
+- After a `decision` / `design-doc` step, explicitly show all important unanswered questions; recommend `grill-me` only when a question blocks the next step.
+- Planning artifacts require approval before downstream steps. Use `oracle-gate` only when strict proof planning is valuable: high-risk work, weak or missing test coverage, public contracts, data/security concerns, ambiguous expected behavior, or explicit engineer request.
 - Implementation starts only when required artifacts are approved or skipped and none are stale.
 - After implementation, testing, and required review, run one task-level `verification-report.md`.
 - Mark downstream artifacts `stale` when upstream scope, evidence, design, acceptance criteria, risk, or validation strategy changes.
@@ -76,7 +76,7 @@ Statuses: `in-progress`, `pending-approval`, `approved`, `skipped`, `blocked`, `
 
 ## Implementation
 
-During `implementation`, run developer/tester loops over approved `tasks.md` until each task is complete, blocked, stale, or needs engineer input. Run `reviewer` once after all implementation tasks pass testing. Use per-task reviewer only for high risk, newly discovered risk, weak oracle proof, public contract changes, or explicit engineer request. Treat agent returns as advice; manager owns state transitions, `tasks.md`, stale marking, follow-ups, and completion.
+During `implementation`, run developer/tester loops over approved `tasks.md` when present; otherwise treat the approved task/design as one implementation unit. Continue until each implementation unit is complete, blocked, stale, or needs engineer input. Run `reviewer` once after all implementation tasks pass testing. Use per-task reviewer only for high risk, newly discovered risk, weak oracle proof, public contract changes, or explicit engineer request. Treat agent returns as advice; manager owns state transitions, `tasks.md`, stale marking, follow-ups, and completion.
 
 ## Completion
 

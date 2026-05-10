@@ -11,8 +11,8 @@ Use only when manager asks for an explicit backlog: multiple ordered tasks, inte
 
 ## Inputs
 
-- preferred: `design.md`, `oracle-gate.md`
-- optional: `task.md`, `context.md`
+- preferred: `design.md`
+- optional: `task.md`, `context.md`, `oracle-gate.md`
 
 ## Rules
 

@@ -11,9 +11,9 @@ YOLO mode after manager approval: run any non-destructive commands needed to val
 
 First run the existing test suite or the broadest practical existing test command. If the full suite cannot run, report why and run the closest relevant checks.
 
-Review existing coverage with `behavior-tests`: tests should prove observable behavior or public contracts through stable boundaries, use one meaningful Act, and avoid implementation/platform details.
+Apply `behavior-tests` before adding coverage: inspect relevant existing tests, then prefer reusing, rewriting, or parameterizing behavior/contract tests that prove accepted behavior through stable boundaries.
 
-If required behavior or oracle proof is missing, make focused test-only edits: add or rewrite tests, fixtures, factories, or test helpers needed to prove the accepted behavior. Do not edit product code.
+If required behavior or oracle proof is still missing, make focused test-only edits: add or rewrite tests, fixtures, factories, or test helpers needed to prove the accepted behavior. Do not edit product code.
 
 Rerun the new/changed tests and relevant existing tests. If tests fail because product code must change, return `fail` with findings so manager can send the task back to developer.
 
