@@ -5,18 +5,19 @@ description: Drive one spec-driven task through the lightest safe scale-based wo
 
 # Manager
 
-Own one task's workflow state. Choose the smallest safe path, run one step, update state, then stop and ask the engineer before moving on.
+Own one task's workflow state. Choose the smallest safe path, run one step, persist `state.json`, then stop for engineer approval. `state.json` is the source of truth; on resume, trust it and current artifacts over chat memory.
 
-## Scale Paths
+## Workflow Paths
 
-- `low`: task -> implementation
-- `medium`: task -> decision -> oracle -> tasks -> implementation
-- `large`: task -> research -> decision -> oracle -> tasks -> implementation
+- `low`: task/brief -> implementation -> verification
+- `medium`: task -> decision -> implementation -> verification
+- `large`: task -> research -> decision -> oracle -> tasks -> implementation -> verification
 
-Use `low` only for localized, clear, low-risk work with no public contract, migration, data, auth, security, privacy, money, concurrency, performance, operations, or external-integration risk.
-Use `medium` when design or a backlog would reduce churn.
-Use `large` when current behavior, root cause, scope, boundaries, data, operations, or integrations need research before design.
-Upgrade scale when evidence adds risk; do not downgrade without explaining why the risk no longer applies.
+- `low`: tiny, localized, clear work. No public contract, migration, data, auth, security, privacy, money, concurrency, performance, operations, or external-integration risk.
+- `medium`: design or small validation intent would reduce churn, but strict oracle proof or task breakdown is not required by default.
+- `large`: risky or unclear work where current behavior, root cause, scope, boundaries, data, operations, integrations, or strict proof planning need investigation before implementation.
+
+Upgrade scale when evidence adds risk; do not downgrade without explaining why.
 
 ## Artifacts
 
@@ -26,6 +27,7 @@ Upgrade scale when evidence adds risk; do not downgrade without explaining why t
 - Decision: `tasks/<task-name>/design.md` via `design-doc`
 - Oracle: `tasks/<task-name>/oracle-gate.md` via `oracle-gate`
 - Tasks: `tasks/<task-name>/tasks.md` via `breakdown`
+- Verification: `tasks/<task-name>/verification-report.md` via `verification-report`
 
 ## State
 
@@ -43,43 +45,39 @@ Keep `state.json` minimal:
     "research": "skipped",
     "decision": "skipped",
     "oracle": "skipped",
-    "tasks": "skipped"
+    "tasks": "skipped",
+    "verification": "skipped"
   },
   "notes": []
 }
 ```
 
-Valid stages: `task`, `research`, `decision`, `oracle`, `tasks`, `implementation`, `testing`, `review`, `done`.
-Valid statuses: `in-progress`, `pending-approval`, `approved`, `skipped`, `blocked`, `done`, `stale`.
-On resume, trust `state.json` and current artifacts over chat memory.
+Stages: `task`, `research`, `decision`, `oracle`, `tasks`, `implementation`, `testing`, `review`, `verification`, `done`.
+Statuses: `in-progress`, `pending-approval`, `approved`, `skipped`, `blocked`, `done`, `stale`.
 
 ## Rules
 
 - Manager is the only writer of `state.json` and `tasks.md`.
 - Run exactly one workflow step at a time.
-- Stop after every step and ask engineer permission for the next step; before advancing stages, use `grill-me` for any blocking or important question that cannot be answered from project artifacts or repo research.
-- Planning artifacts require approval before downstream steps. Run `oracle-gate` after design approval and before `breakdown` whenever `decision` is required.
+- After a `decision` / `design-doc` step, explicitly show all important unanswered questions; recommend `grill-me` only when a question blocks the next step.
+- Planning artifacts require approval before downstream steps. Use `oracle-gate` only when strict proof planning is valuable: high-risk work, weak or missing test coverage, public contracts, data/security concerns, ambiguous expected behavior, or explicit engineer request.
 - Implementation starts only when required artifacts are approved or skipped and none are stale.
+- After implementation, testing, and required review, run one task-level `verification-report.md`.
 - Mark downstream artifacts `stale` when upstream scope, evidence, design, acceptance criteria, risk, or validation strategy changes.
-- Use existing artifacts as subagent handoff context; avoid extra handoff files.
+- Use existing artifacts as handoff context; avoid extra handoff files.
 
 ## Step Algorithm
 
 1. Infer the event: `new_request`, `approve`, `revise`, `reject`, `cancel`, `status`, `implement`, or `resume`.
 2. Load only the state and artifacts needed for the current step.
-3. Run the next step from the scale path, or the engineer-approved override.
+3. Run the next step from the workflow path, or the engineer-approved override.
 4. Update `state.json`.
-5. Stop with: completed step, scale, current status, stale artifacts, recommended next step, why, and recommended answer.
-
-## Agent Returns
-
-Treat agent returns as advice, not authority. Follow valid recommendations that stay within approved scope. Manager still owns state, task list edits, stage changes, and gates. Stop for engineer permission before splitting, adding follow-ups, refreshing artifacts, running another agent, or marking done.
+5. Stop with the completed step, scale, status, stale artifacts, recommended next step, why, and recommended answer.
 
 ## Implementation
 
-When implementation is approved, spawn one `developer` in YOLO mode with approved scope, ownership, and stop conditions.
-Ask before tester or reviewer. Use tester for behavior, contract, or regression risk, including proof planned by `oracle-gate`. Use reviewer only for high risk, newly discovered risk, weak oracle proof, or explicit engineer request.
+During `implementation`, run developer/tester loops over approved `tasks.md` when present; otherwise treat the approved task/design as one implementation unit. Continue until each implementation unit is complete, blocked, stale, or needs engineer input. Run `reviewer` once after all implementation tasks pass testing. Use per-task reviewer only for high risk, newly discovered risk, weak oracle proof, public contract changes, or explicit engineer request. Treat agent returns as advice; manager owns state transitions, `tasks.md`, stale marking, follow-ups, and completion.
 
 ## Completion
 
-Mark `done` only when required artifacts are approved or skipped, implementation is complete, oracle-planned proof has passed or was skipped with reason, required validation/review passed or was skipped with reason, and no required stale or follow-up work remains.
+Mark `done` only when required artifacts are approved or skipped, implementation is complete, oracle-planned proof has passed or was skipped with reason, verification report is complete or skipped with reason, required validation/review passed or was skipped with reason, and no required stale or follow-up work remains.
