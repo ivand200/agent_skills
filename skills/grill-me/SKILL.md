@@ -1,11 +1,13 @@
 ---
 name: grill-me
-description: Stress-test a plan or design question by question until the next safe step is clear.
+description: Stress-test blocking or important product, architecture, system-design, interface, or proof questions one by one until the next safe step is clear.
 ---
 
 # Grill Me
 
 Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one by one.
+
+Use for questions that are blocking or important enough to change scope, architecture, public interfaces, system behavior, proof strategy, or implementation order.
 
 If a question can be answered by exploring the codebase or existing artifacts, explore them instead of asking.
 

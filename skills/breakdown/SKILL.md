@@ -1,50 +1,61 @@
 ---
 name: breakdown
-description: Turn an accepted design into a short ordered implementation backlog with validation and skip/full review scope.
+description: Turn an accepted design into a short vertical implementation checklist with outcome, check, and review scope for each task.
 ---
 
 # Breakdown
 
 Create or refresh `tasks/<task-name>/tasks.md`. Do not implement code.
 
-Use only when manager asks for an explicit backlog: multiple ordered tasks, integration steps, mixed review scopes, or multi-agent execution.
+`tasks.md` is the implementation loop contract: what changes, why it matters, how to prove it, and who reviews it.
+
+Use only when manager asks for an explicit implementation checklist: multiple ordered tasks, integration steps, mixed review scopes, or multi-agent execution.
 
 ## Inputs
 
-- preferred: `design.md`
-- optional: `task.md`, `context.md`, `oracle-gate.md`
+- preferred: `design.md`, especially `Decision` and `Oracle Gate`
+- optional: `task.md`
 
 ## Rules
 
 - Stay within accepted task/design scope.
-- Stop if design is not settled enough or a required oracle gate is missing, failed, or unapproved.
-- Prefer 3-12 tasks, each one clean implementation pass.
-- Include verification through observable behavior or public contracts from `oracle-gate.md` when present.
+- Stop if design is not settled enough or its `Oracle Gate` verdict is `block`.
+- Prefer 2-10 vertical tasks, each one clean implementation pass.
+- Each task should produce a behavior, contract, or integration outcome, not just a layer.
+- Use `Oracle Gate` claims for checks whenever possible.
+- Do not create one task for tests only unless the product behavior already exists and only proof is missing.
 - Carry forward review scope.
 - Split tasks when low-risk work mixes with interface, cross-module, or high-risk work.
-- Manager owns routing and completion state; this file owns backlog content only.
+- Manager owns routing, completion state, and task status; this file owns checklist content only.
+
+## Task Shape
+
+Each task answers:
+
+- what will change
+- why it matters
+- how to prove it
+- who reviews it
 
 ## Output
 
 ```md
 # Implementation Tasks: [Task Name]
 
-## Traceability Matrix
+## Rules
 
-| Source  | Task     | Validation |
-| ------- | -------- | ---------- |
-| `REQ-1` | `Task 1` | `VAL-1`    |
+- Work one task at a time.
+- Each task ends with its check run or a blocker.
+- Do not expand scope without manager approval.
 
-## Backlog
+## Tasks
 
-- [ ] **Task 1: [Title]**
+- [ ] **T1: [Behavior Slice]**
   - **Covers:** `REQ-1`, `AC-1`, or design goal
-  - **Validation:** `VAL-1` or oracle proof item
-  - **Review:** `skip | full` plus short reason
-  - **Depends on:** `None`
-  - **Files:** `path/to/file`
-  - **Action:** Specific implementation step
-  - **Verify:** Focused test, check, or manual validation
+  - **Outcome:** User/business/module result this task delivers
+  - **Do:** Specific implementation step
+  - **Check:** Focused behavior, contract, regression, integration, or manual check
+  - **Review:** `skip | full`, plus short reason
 
 ## Notes
 

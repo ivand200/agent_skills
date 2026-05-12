@@ -1,11 +1,13 @@
 ---
 name: task-requirements
-description: Create or refine feature `task.md` with scope, acceptance criteria, interface facts, and risk facts. Manager owns routing.
+description: Create or refine feature `task.md` with user stories, rules, acceptance examples, routing facts, and open questions. Manager owns routing.
 ---
 
 # Task Requirements
 
 Create or refresh `tasks/<task-name>/task.md` for feature work. Do not edit source code or workflow state.
+
+Use a compact BDD shape: user story, rules, examples, questions.
 
 If the request is a defect, regression, broken behavior, failing test, or current-vs-expected report, stop and use `bugfix-spec`.
 
@@ -13,11 +15,11 @@ If the request is a defect, regression, broken behavior, failing test, or curren
 
 - Capture facts only; do not choose the workflow route, pass gates, or advance stages.
 - Read the user request first.
-- Read `AGENTS.md`, `CLAUDE.md`, `steering/`, and companion artifacts only when relevant.
-- Inspect repository evidence before asking questions.
+- Inspect repository evidence before asking questions when the answer should be discoverable.
 - Use `grill-me` for important questions that repository evidence cannot answer.
 - Keep workflow status in `state.json`, not this artifact.
-- Use the vocabularies shown in the template.
+- Write rules as observable system behavior when possible.
+- Write acceptance examples in Given/When/Then form.
 
 ## Output
 
@@ -32,7 +34,7 @@ If the request is a defect, regression, broken behavior, failing test, or curren
 
 - type: `feature`
 - scale: `low | medium | large`
-- interface impact: `none | internal-only | public-contract`
+- interface impact: `none | internal-only | public-contract | unclear`
 - risk flags: `auth | security | privacy | money | data integrity | migration | concurrency | performance | operations | none`
 - review hint: `skip | full | unknown`
 
@@ -42,30 +44,19 @@ If the request is a defect, regression, broken behavior, failing test, or curren
 
 ## Rules
 
-- [REQ-1] ...
+- [REQ-1] When ..., the system shall ...
+- [REQ-2] If ..., the system shall ...
 
-## Module / Interface Notes
-
-- Affected module: ...
-- Affected entities: ...
-- Public contract impact: `none | changed | new | unclear`
-- Behavior tests expected: ...
-- Contract tests expected: ...
-
-## Examples
-
-- Input / action: ...
-- Expected result: ...
-
-## Open Questions
-
-- ...
-
-## Acceptance Criteria
+## Acceptance Examples
 
 ### AC-1: [Short Name]
+Covers: `REQ-1`
 
 Given ...
 When ...
 Then ...
+
+## Questions
+
+- ...
 ```

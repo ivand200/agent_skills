@@ -15,9 +15,7 @@ Read all available task artifacts in `tasks/<task-name>/`:
 
 - `state.json`
 - `task.md`
-- `context.md`
 - `design.md`
-- `oracle-gate.md`
 - `tasks.md`
 - developer/tester/reviewer returns when present
 - changed files, test output, CI logs, screenshots, or E2E artifacts when available
@@ -30,8 +28,8 @@ Read all available task artifacts in `tasks/<task-name>/`:
 
 ## Workflow
 
-1. Map accepted claims from task/design/oracle artifacts to actual evidence.
-2. Select the 1-3 most critical automated tests for this feature.
+1. Map accepted claims from task and design, especially `Oracle Gate`, to actual evidence.
+2. Select the 1-3 most critical automated tests for this task.
 3. Select the 1-2 most relevant E2E/workflow tests when present.
 4. Write what the engineer should inspect, manually verify, or distrust.
 5. Decide verdict: `ready_for_engineer_check`, `warn`, or `blocked`.
