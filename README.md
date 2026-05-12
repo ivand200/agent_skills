@@ -4,7 +4,7 @@ This repository contains a practical implementation of a Spec-Driven Development
 
 The workflow is designed around one engineering problem: AI agents can generate code quickly, but professional software delivery needs controlled scope, explicit intent, proof of correctness, and reviewable decisions.
 
-Instead of sending an agent directly from request to code, this workflow scales the process by task risk. Small changes stay lightweight. Risky changes go through requirements, research, design, oracle/proof planning, task breakdown, bounded implementation, validation, and review.
+Instead of sending an agent directly from request to code, this workflow scales the process by task risk. Small changes stay lightweight. Risky changes go through requirements, module/interface design with targeted research as needed, oracle proof, task breakdown, bounded implementation, validation, and review.
 
 ![Spec-Driven Agent Workflow](spec-driven-agent-workflow.png)
 
@@ -33,21 +33,23 @@ low risk:
 task/brief -> implementation -> verification
 
 medium risk:
-task -> design with small validation intent -> implementation -> verification
+task -> design with small oracle proof -> implementation -> verification
 
 large or risky:
-task -> research -> design -> oracle-gate -> tasks -> implementation -> verification
+task -> design -> tasks -> implementation -> verification
 ```
 
 Use `low` for tiny, localized, clear work.
 
-Use `medium` when design or small validation intent would reduce churn, but strict oracle proof or task breakdown is not required by default.
+Use `medium` when design or a small oracle proof would reduce churn, but task breakdown is not required by default.
 
-Use `large` when current behavior, root cause, module boundaries, data, operations, integrations, or strict proof planning need investigation before implementation.
+Use `large` when design must settle current behavior, root cause, module boundaries, data, operations, integrations, or oracle proof before implementation.
+
+Use `design.md` for both targeted context research and oracle proof. `research-context` and `oracle-gate` are small helper skills that write sections inside `design.md`; they do not create separate default artifacts.
 
 Planning is approval-gated one step at a time: the manager creates or refreshes one artifact, records state, and stops for engineer approval before moving to the next planning stage.
 
-Implementation loops happen only inside the implementation stage. Developer and tester run per approved implementation task; reviewer runs once after all implementation tasks pass testing, unless a high-risk task needs per-task review. Agents must stop if product intent, design, proof strategy, or approved scope changes.
+Implementation loops happen only inside the implementation stage. Developer runs each approved implementation task, reusing or improving existing behavior/contract tests before adding new ones, and runs the focused checks needed to prove the task. Reviewer then reviews that task for correctness, scope, module boundaries, public contracts, proof coverage, and real maintainability risks. After all tasks pass review or approved skips, tester validates the integrated result against the design's `Oracle Gate` using `behavior-tests`. Agents must stop if product intent, design, oracle proof, or approved scope changes.
 
 ## Artifacts
 
@@ -57,10 +59,8 @@ Each task can produce a small set of durable artifacts under `tasks/<task-name>/
 | --- | --- |
 | `state.json` | Workflow state, current stage, artifact status, and routing notes. |
 | `task.md` | Requirements, acceptance criteria, scope, risk flags, and interface impact. |
-| `context.md` | Research evidence about current behavior, module boundaries, contracts, or external docs. |
-| `design.md` | Accepted design, tradeoffs, impacted modules, contract impact, and planned validation. |
-| `oracle-gate.md` | Proof plan: what must be tested or manually verified before the work can be trusted. |
-| `tasks.md` | Ordered implementation backlog with traceability to requirements and validation. |
+| `design.md` | Accepted module/interface design, options considered, tradeoffs, targeted context research, and oracle proof. |
+| `tasks.md` | Ordered vertical implementation checklist with outcome, check, and review scope for each task. |
 | `verification-report.md` | Final verification summary: important proof, tests to inspect, manual checks, and residual risk. |
 
 ## Skills
@@ -70,16 +70,16 @@ The workflow is implemented as reusable agent skills. Each skill is plain Markdo
 | Skill | Responsibility |
 | --- | --- |
 | [`manager`](skills/manager/SKILL.md) | Owns workflow state, selects the smallest safe path, runs one step at a time, and stops for engineer approval at gates. |
-| [`task-requirements`](skills/task-requirements/SKILL.md) | Captures feature requirements, user stories, examples, acceptance criteria, interface impact, risk flags, and review hints. |
-| [`bugfix-spec`](skills/bugfix-spec/SKILL.md) | Captures defects with reproduction steps, current behavior, expected behavior, unchanged behavior, and regression properties. |
-| [`research-context`](skills/research-context/SKILL.md) | Investigates current code, module boundaries, tests, contracts, external docs, and risk signals when design or implementation needs evidence. |
-| [`design-doc`](skills/design-doc/SKILL.md) | Records accepted design decisions, tradeoffs, module impact, public contract impact, validation strategy, and review scope. |
-| [`oracle-gate`](skills/oracle-gate/SKILL.md) | Defines the proof required before implementation: behavior tests, contract tests, regression tests, integration checks, or manual validation. |
-| [`breakdown`](skills/breakdown/SKILL.md) | Turns an accepted design and oracle plan into ordered implementation tasks with traceability and validation. |
-| [`verification-report`](skills/verification-report/SKILL.md) | Summarizes the most important proof after implementation, testing, and review so an engineer knows which tests, E2E checks, and residual risks to inspect. |
-| [`grill-me`](skills/grill-me/SKILL.md) | Resolves material ambiguity through one-question-at-a-time design interrogation before the workflow moves forward. |
+| [`task-requirements`](skills/task-requirements/SKILL.md) | Captures feature work as user stories, observable rules, acceptance examples, routing facts, and questions. |
+| [`bugfix-spec`](skills/bugfix-spec/SKILL.md) | Captures bugfix work as current behavior, expected behavior, unchanged behavior, reproduction, acceptance examples, routing facts, and questions. |
+| [`research-context`](skills/research-context/SKILL.md) | Researches only the repo facts, external docs, options, and risks that change the design decision. |
+| [`design-doc`](skills/design-doc/SKILL.md) | Records accepted module/interface decisions, options considered, tradeoffs, context research, oracle proof, and review scope. |
+| [`oracle-gate`](skills/oracle-gate/SKILL.md) | Defines the smallest proof that can distinguish a correct implementation from a wrong one before coding starts. |
+| [`breakdown`](skills/breakdown/SKILL.md) | Turns an accepted design and its oracle proof into a vertical implementation checklist with outcome, check, and review scope. |
+| [`verification-report`](skills/verification-report/SKILL.md) | Summarizes the most important proof after implementation, review, and final testing so an engineer knows which tests, E2E checks, and residual risks to inspect. |
+| [`grill-me`](skills/grill-me/SKILL.md) | Resolves blocking or important product, architecture, system-design, interface, or proof questions one at a time. |
 | [`architecture-principles`](skills/architecture-principles/SKILL.md) | Supports design and review with lightweight architecture rules: deep modules, stable interfaces, boundary ownership, and abstraction tradeoffs. |
-| [`behavior-tests`](skills/behavior-tests/SKILL.md) | Supports implementation and validation with behavior-focused tests around stable public boundaries instead of private implementation details. |
+| [`behavior-tests`](skills/behavior-tests/SKILL.md) | Guides developer/tester agents on how to write or review behavior-focused tests around stable public boundaries. |
 | [`module-interface-sketch`](skills/module-interface-sketch/SKILL.md) | Creates bright module/interface sketches that make system boundaries and public contracts understandable at a glance. |
 
 ## Agents
@@ -88,11 +88,11 @@ The workflow uses bounded agent roles with narrow ownership instead of one unres
 
 | Agent | Responsibility |
 | --- | --- |
-| [`developer`](agents/developer.toml) | Implements exactly one approved task within accepted artifacts. May edit product code and relevant tests. Must not edit workflow state or expand scope. |
-| [`tester`](agents/tester.toml) | Validates one implemented task against accepted artifacts and oracle proof. May edit tests only. Must not edit product code. |
-| [`reviewer`](agents/reviewer.toml) | Performs read-only review of the completed implementation batch. Focuses on public interfaces, module boundaries, proof coverage, scope drift, and risk-bearing changes. |
+| [`developer`](agents/developer.toml) | Implements exactly one approved task within accepted artifacts, runs focused checks, and reuses or improves existing tests before adding new ones. |
+| [`reviewer`](agents/reviewer.toml) | Performs read-only review of one implemented task. Focuses on public interfaces, module boundaries, proof coverage, scope drift, and risk-bearing changes. |
+| [`tester`](agents/tester.toml) | Validates the completed implementation batch against accepted artifacts and the design's `Oracle Gate`. May edit tests only. Must not edit product code. |
 
-The developer and tester loop runs per implementation task. The reviewer is the final integrated check before `verification-report.md`, with per-task review reserved for high-risk exceptions.
+The developer and reviewer loop runs per implementation task. Tester is the final integrated validation before `verification-report.md`, with per-task tester runs reserved for high-risk exceptions.
 
 ## Worked Example
 
@@ -100,42 +100,74 @@ Example request:
 
 > Add password reset by email. Users should request a reset link, use it once before expiry, and keep existing login behavior unchanged.
 
-Because this touches authentication and user account recovery, the manager routes it as a `medium` task.
+Because this touches authentication and user account recovery, the manager routes it as a `large` task.
 
 ```text
 tasks/add-password-reset/
   state.json
   task.md
   design.md
-  oracle-gate.md
   tasks.md
   verification-report.md
 ```
 
-`task.md` captures intent and acceptance criteria:
+`task.md` captures intent, rules, and acceptance examples:
 
 ```md
 # Task: Add Password Reset
 
-## Rules
-- [REQ-1] A user can request a password reset email for an existing account.
-- [REQ-2] A reset token can be used once before expiry.
-- [REQ-3] Existing email/password login behavior remains unchanged.
+## User Stories
+- As a user who forgot my password, I want to reset it by email, so that I can regain access to my account.
 
-## Acceptance Criteria
+## Rules
+- [REQ-1] When a user requests a password reset, the system shall send a reset link when the account exists.
+- [REQ-2] When a reset token is used, the system shall accept it only once before expiry.
+- [REQ-3] When normal email/password login is used, the system shall continue to behave as before.
+
+## Acceptance Examples
 ### AC-1: Request Reset
+Covers: `REQ-1`
+
 Given an existing user
 When they request a password reset
 Then the system sends a reset link without exposing whether the email exists.
 ```
 
-`design.md` records the chosen approach:
+`design.md` records the module/interface decision, considered options, targeted research, and oracle proof:
 
 ```md
-## Decision Summary
+## Context Research
+- Question: Should reset tokens be stored or signed?
+- Evidence:
+  - Repo: current auth module stores server-side session state.
+  - Docs: email links can be forwarded, so single-use invalidation matters.
+- Options:
+  - Option A: Store hashed reset tokens with expiry.
+  - Option B: Use signed stateless reset tokens.
+- Decision impact: Stored tokens support single-use invalidation directly.
+- Confidence: high
+
+## Module / Interface Design
+| Module | Outside Boundary | Public Interface | Change | Hidden Details | Owner / Boundary |
+| --- | --- | --- | --- | --- | --- |
+| Auth recovery | Password reset request/completion API | Request reset and complete reset behaviors | new | hashed tokens, expiry, invalidation | auth module |
+
+## Options Considered
+- Store hashed reset tokens with expiry.
+- Use signed stateless reset tokens.
+
+## Decision
 - Store hashed reset tokens with expiry.
 - Invalidate a token after successful use.
 - Keep login/session behavior unchanged.
+
+## Oracle Gate
+| Claim | Oracle | Boundary | Check | Failure it catches |
+| --- | --- | --- | --- | --- |
+| `AC-1` | specified | API | request reset returns same response for known/unknown email | account enumeration leak |
+| `REQ-2` | contract | API/service | token can be used once before expiry | reusable or expired reset token |
+
+Verdict: `pass`
 
 ## Review Scope
 - Interface changed: yes
@@ -143,32 +175,27 @@ Then the system sends a reset link without exposing whether the email exists.
 - Reviewer mode: full
 ```
 
-`oracle-gate.md` defines proof before code:
+The oracle gate defines what must be proven before implementation starts. `behavior-tests` governs how developer and tester agents write or review the actual tests.
+
+`tasks.md` turns approved scope into a vertical implementation checklist:
 
 ```md
-## Claim / Proof Map
-| Claim | Required Proof | Preferred Boundary | Strength |
-| --- | --- | --- | --- |
-| `AC-1` | reset request does not reveal account existence | API behavior test | strong |
-| `REQ-2` | token is single-use and expires | service/API behavior test | strong |
-| `REQ-3` | existing login still works | regression test | strong |
-```
-
-`tasks.md` turns approved scope into bounded work:
-
-```md
-- [ ] **Task 1: Add reset request and token persistence**
+- [ ] **T1: Request reset link**
   - **Covers:** `REQ-1`
-  - **Validation:** reset request behavior test
-  - **Review:** full because auth flow changes
+  - **Outcome:** existing users can request a reset link without account enumeration
+  - **Do:** add reset request path and hashed token persistence
+  - **Check:** same API response for known and unknown email
+  - **Review:** full, auth/privacy boundary
 
-- [ ] **Task 2: Add reset completion**
+- [ ] **T2: Complete reset once**
   - **Covers:** `REQ-2`, `REQ-3`
-  - **Validation:** single-use, expiry, and login regression tests
-  - **Review:** full because security behavior changes
+  - **Outcome:** token changes password once before expiry and does not break login
+  - **Do:** add reset completion path and token invalidation
+  - **Check:** single-use, expiry, and login regression tests
+  - **Review:** full, security boundary
 ```
 
-After implementation, testing, and required review, `verification-report.md` gives the engineer the final check:
+After implementation, review, and final testing, `verification-report.md` gives the engineer the final check:
 
 ```md
 ## Verdict
@@ -191,9 +218,9 @@ This repository is not just a prompt collection. It demonstrates an engineering 
 - risk-based workflow selection
 - explicit requirements and acceptance criteria
 - bugfix specs with regression guardrails
-- research before design when current behavior is uncertain
+- design that researches only decision-changing context before choosing an approach
 - design approval before risky implementation
-- oracle/proof planning before code generation
+- oracle proof before code generation
 - bounded developer, tester, and reviewer agents
 - traceability from requirement to implementation task to validation
 - verification reporting before final engineer acceptance

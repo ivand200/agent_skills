@@ -1,74 +1,118 @@
 ---
 name: design-doc
-description: Create or refine `design.md` when decisions, boundaries, contracts, risk tradeoffs, or validation strategy need approval before coding.
+description: Create or refine a compact `design.md` centered on module/interface decisions, options, tradeoffs, context research, and oracle proof before coding.
 ---
 
 # Design Doc
 
 Create or refresh `tasks/<task-name>/design.md`. Do not write implementation code or source edits.
 
-Use `architecture-principles`. Manager decides when design is needed and owns routing/gates.
+The design doc is a decision artifact: what changes, which option won, why, and how we will know implementation is correct.
+
+Use `architecture-principles` for module/interface judgment. Use `research-context` only when facts would change the decision. Use `oracle-gate` before implementation when a wrong implementation would be plausible.
 
 ## Use When
 
-- Design decisions, boundaries, tradeoffs, validation strategy, oracle-gate inputs, or review scope need approval.
-- Public contracts, schemas, data, auth/security/privacy, migrations, concurrency, performance, operations, or cross-module behavior may change.
-- A later backlog needs a settled design.
+- requirements or bug analysis are approved and implementation needs direction
+- the task touches module boundaries, public interfaces, data, auth/security/privacy, operations, migrations, performance, concurrency, or cross-module behavior
+- multiple viable implementation options exist
+- implementation would likely churn without a decision
+- `tasks.md` needs a clear source for implementation slices
+
+Skip or keep minimal for tiny, localized, low-risk work.
+
+## Rules
+
+- Start from the outside boundary callers/users rely on, then trace inward only as needed.
+- Record decision-relevant evidence, not every file inspected.
+- Put research in `## Context Research`; do not create `context.md`.
+- Put proof in `## Oracle Gate`; do not create `oracle-gate.md`.
+- Prefer the smallest design that satisfies accepted requirements.
+- Prefer 1-3 critical proof claims over one check per requirement.
+- Use `grill-me` for blocking or important product, architecture, system-design, interface, or proof questions not answerable from artifacts, guidance, or targeted research.
+- Keep workflow status in `state.json`; this skill may recommend state changes but must not make them.
 
 ## Workflow
 
-1. Read `task.md` or brief first.
-2. Read `context.md` if present.
-3. Read relevant `AGENTS.md`, `CLAUDE.md`, and `steering/` only when present.
-4. Research existing patterns only as needed.
-5. Use `grill-me` only for blocking or important questions not answerable from artifacts, docs, or targeted repo research.
-6. Write or refresh `design.md`.
-7. Note stale downstream artifacts only when design changes accepted scope or task order.
+1. Read `task.md` or `bugfix.md` first.
+2. Read `state.json`, existing `design.md`, and `tasks.md` when present.
+3. Read project guidance when relevant: `steering/`, `README.md`, `AGENTS.md`, `CLAUDE.md`.
+4. Trace affected modules/interfaces from public boundary inward.
+5. Use `research-context` only for facts that change options or risk.
+6. Identify viable options before choosing.
+7. Choose the smallest safe option.
+8. Use `oracle-gate` to define the smallest useful proof.
+9. Write or refresh `design.md`.
+10. Call out stale downstream artifacts when scope, proof, or task order changes.
 
 ## Output
 
 ```md
-# Design Document: [Task Name]
+# Design: [Task Name]
 
 ## Goal
+
 ...
 
-## Discovered Behavior
-- Scenarios, edge cases, constraints.
+## Context Research
 
-## Decision Summary
-- Chosen approach, why, rejected alternatives, tradeoffs, invariants, boundaries.
+- Question:
+- Evidence:
+  - Repo:
+  - Docs:
+- Options:
+  - Option A:
+  - Option B:
+- Decision impact:
+- Open risk:
+- Confidence: `high | medium | low`
 
-## Proposed Design
-- Architecture / flow: ...
-- File / module impact: ...
-- API / contract impact: ...
-- Module / entity impact:
-  - Status: `none | single-module-internal | public-contract | cross-module`
-  - Touched modules/entities: ...
-  - Public contract impact: ...
-  - Contract tests: ...
+## Module / Interface Design
+
+| Module | Outside Boundary | Public Interface | Change | Hidden Details |
+| --- | --- | --- | --- | --- |
+| ... | ... | ... | `none | changed | new | unclear` | ... |
+
+## Options Considered
+
+- Option A:
+- Option B:
+
+## Decision
+
+- Chosen option:
+- Why:
+- Invariants:
+- Tradeoffs:
 
 ## Data / Operations
-- Data/model, rollout, migration, rollback, operations when relevant.
+
+- Data/model impact:
+- Migration/rollout/rollback:
+- Runtime/ops concerns:
+- Security/privacy concerns:
+
+## Oracle Gate
+
+| Claim | Oracle | Boundary | Check | Failure it catches |
+| --- | --- | --- | --- | --- |
+| ... | `specified | contract | metamorphic | human` | ... | ... | ... |
+
+Verdict: `pass | block`
 
 ## Review Scope
+
 - Interface changed: `yes | no`
-- Contract tests changed: `yes | no`
-- Internal-only change: `yes | no`
+- Contract behavior changed: `yes | no`
 - Risk flags: `auth | security | privacy | money | data integrity | migration | concurrency | performance | operations | none`
 - Reviewer mode: `skip | full`
-- Why: ...
+- Why:
 
-## Traceability / Validation
-| Source | Design Response | Planned Task | Planned Validation |
-| --- | --- | --- | --- |
-| `REQ-1` | ... | `Task 1` | `VAL-1` |
+## Open Questions
 
-Planned validation should be concrete enough for `oracle-gate` to derive behavior, contract, regression, or manual proof before breakdown.
-
-## Assumptions / Open Questions
 - ...
-```
 
-Use module/entity detail only when risk or scale justifies it. Keep workflow status in `state.json`.
+## Downstream Impact
+
+- `tasks.md`: `current | stale | not-created`
+```
