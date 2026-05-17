@@ -14,7 +14,7 @@ Use `architecture-principles` for module/interface judgment. Use `research-conte
 ## Use When
 
 - requirements or bug analysis are approved and implementation needs direction
-- the task touches module boundaries, public interfaces, data, auth/security/privacy, operations, migrations, performance, concurrency, or cross-module behavior
+- the task touches module seams, interfaces, data, auth/security/privacy, operations, migrations, performance, concurrency, or cross-module behavior
 - multiple viable implementation options exist
 - implementation would likely churn without a decision
 - `tasks.md` needs a clear source for implementation slices
@@ -23,7 +23,8 @@ Skip or keep minimal for tiny, localized, low-risk work.
 
 ## Rules
 
-- Start from the outside boundary callers/users rely on, then trace inward only as needed.
+- Start from the seam callers/users rely on, then trace inward only as needed.
+- Treat current `steering/` docs as baseline project context. Call out missing, stale, or conflicting steering instead of inventing durable project rules.
 - Record decision-relevant evidence, not every file inspected.
 - Put research in `## Context Research`; do not create `context.md`.
 - Put proof in `## Oracle Gate`; do not create `oracle-gate.md`.
@@ -36,8 +37,8 @@ Skip or keep minimal for tiny, localized, low-risk work.
 
 1. Read `task.md` or `bugfix.md` first.
 2. Read `state.json`, existing `design.md`, and `tasks.md` when present.
-3. Read project guidance when relevant: `steering/`, `README.md`, `AGENTS.md`, `CLAUDE.md`.
-4. Trace affected modules/interfaces from public boundary inward.
+3. Read all relevant `steering/` docs, including custom steering files when present; then read `README.md`, `AGENTS.md`, or `CLAUDE.md` only when they contain decision-changing project guidance.
+4. Trace affected modules/interfaces from the caller-visible seam inward.
 5. Use `research-context` only for facts that change options or risk.
 6. Identify viable options before choosing.
 7. Choose the smallest safe option.
@@ -69,7 +70,7 @@ Skip or keep minimal for tiny, localized, low-risk work.
 
 ## Module / Interface Design
 
-| Module | Outside Boundary | Public Interface | Change | Hidden Details |
+| Module | Seam | Interface | Change | Hidden Implementation |
 | --- | --- | --- | --- | --- |
 | ... | ... | ... | `none | changed | new | unclear` | ... |
 
@@ -94,7 +95,7 @@ Skip or keep minimal for tiny, localized, low-risk work.
 
 ## Oracle Gate
 
-| Claim | Oracle | Boundary | Check | Failure it catches |
+| Claim | Oracle | Seam | Check | Failure it catches |
 | --- | --- | --- | --- | --- |
 | ... | `specified | contract | metamorphic | human` | ... | ... | ... |
 

@@ -15,9 +15,11 @@ Own one task's workflow state. Choose the smallest safe path, run one step, pers
 
 - `low`: tiny, localized, clear work. No public contract, migration, data, auth, security, privacy, money, concurrency, performance, operations, or external-integration risk.
 - `medium`: design or small oracle proof would reduce churn, but task breakdown is not required by default.
-- `large`: risky or unclear work where design must settle current behavior, root cause, scope, boundaries, data, operations, integrations, or oracle proof before implementation.
+- `large`: risky or unclear work where design must settle current behavior, root cause, scope, seams, data, operations, integrations, or oracle proof before implementation.
 
 Upgrade scale when evidence adds risk; do not downgrade without explaining why.
+
+For `medium` and `large`, check whether `steering/` exists and appears relevant before planning. If durable project purpose, technical constraints, or module/interface seams are missing or stale, call that out and recommend a `project-specs` preflight; continue only when the engineer approves or explicitly accepts lower confidence.
 
 ## Artifacts
 
@@ -66,13 +68,14 @@ Statuses: `in-progress`, `pending-approval`, `approved`, `skipped`, `blocked`, `
 
 1. Infer the event: `new_request`, `approve`, `revise`, `reject`, `cancel`, `status`, `implement`, or `resume`.
 2. Load only the state and artifacts needed for the current step.
-3. Run the next step from the workflow path, or the engineer-approved override.
-4. Update `state.json`.
-5. Stop with the completed step, scale, status, stale artifacts, recommended next step, why, and recommended answer.
+3. For `medium` or `large` planning, check `steering/` before creating or refreshing task/design/tasks artifacts.
+4. Run the next step from the workflow path, or the engineer-approved override.
+5. Update `state.json`.
+6. Stop with the completed step, scale, status, stale artifacts, recommended next step, why, and recommended answer.
 
 ## Implementation
 
-During `implementation`, run developer/reviewer loops over approved `tasks.md` when present; otherwise treat the approved task/design as one implementation unit. For each implementation unit, run `developer`, check scope and file boundaries, then run `reviewer` unless review is explicitly skipped for low-risk work. If review requests changes, send the findings back to `developer` within the retry budget.
+During `implementation`, run developer/reviewer loops over approved `tasks.md` when present; otherwise treat the approved task/design as one implementation unit. For each implementation unit, run `developer`, check scope and touched files, then run `reviewer` unless review is explicitly skipped for low-risk work. Ask review to keep `Spec Review` and `Standards Review` separate. If review requests changes, send the findings back to `developer` within the retry budget.
 
 After all implementation units pass review or approved skips, run `tester` once against the integrated result and design's `Oracle Gate`. If tester fails because product code must change, send findings back to `developer`; run `reviewer` again for meaningful code changes, then rerun relevant tester validation.
 

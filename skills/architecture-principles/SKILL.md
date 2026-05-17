@@ -1,56 +1,54 @@
 ---
 name: architecture-principles
-description: Apply lightweight architecture principles during design or implementation. Use for simplicity, module boundaries, explicit module interfaces, interface-first review, and tradeoffs such as DRY, KISS, YAGNI, coupling, and cohesion.
+description: Apply module/interface architecture principles during design, implementation, and review. Use for deep modules, seams, adapters, interface-first proof, coupling, cohesion, and abstraction tradeoffs.
 ---
 
 # Architecture Principles
 
-Prefer deep modules: small stable interfaces that hide meaningful complexity.
+Architecture starts with modules and interfaces.
 
-Decision priority:
+Use `LANGUAGE.md` vocabulary exactly: `Module`, `Interface`, `Implementation`, `Depth`, `Seam`, `Adapter`, `Leverage`, and `Locality`. Do not drift into "component," "service," "API," or "boundary." Full definitions live in `skills/glossary/LANGUAGE.md` and `$CODEX_HOME/skills/glossary/LANGUAGE.md`.
 
-1. correctness
-2. clarity
-3. simplicity
-4. maintainability
-5. deduplication
+Use only `steering/` for project facts and domain names.
+
+Prefer deep modules: small, stable interfaces that hide meaningful implementation complexity and give callers leverage while preserving locality for maintainers.
+
+Decision priority: correctness, clarity, simplicity, maintainability, then deduplication.
 
 ## Rules
 
-- Prefer existing project patterns unless they are causing real pain.
-- Design deep modules: keep public interfaces small and stable while hiding volatile details and meaningful complexity.
+- Start from the module and its interface: what callers must know, and what implementation details stay hidden.
 - Keep related behavior together; split modules around ownership of design decisions, not processing steps alone.
-- Add abstraction only when it hides real complexity, removes meaningful duplication, protects an external boundary, supports useful fakes, or stabilizes a contract.
-- Avoid shallow abstractions: speculative hooks, generic layers, pass-through modules, catch-all services, and APIs that expose internals.
+- The interface is the test surface. Callers and tests should cross the same seam.
+- Use the deletion test: if deleting a module removes complexity, it was a pass-through; if complexity reappears across callers, the module was earning its keep.
+- Add abstraction only when it hides real complexity, creates locality, supports real variation, enables useful adapters, or stabilizes an important interface.
+- Avoid shallow modules: speculative hooks, pass-through wrappers, catch-all modules, and interfaces that expose implementation details.
+- One adapter means a hypothetical seam. Two adapters mean a real seam.
+- Respect current `steering/` docs; call out stale or missing steering instead of inventing durable project rules.
+
+## Friction Signals
+
+Recommend architecture changes only when there is real friction: concepts scattered across many modules, interfaces nearly as complex as implementations, repeated caller rules, tests reaching past interfaces, or small changes requiring many caller edits.
 
 ## Use When Relevant
 
-- Layering: use `UI / transport -> business logic / use case -> data access / infrastructure` as the default mental model for apps. Keep business decisions out of UI handlers and persistence details out of business workflows.
-- Repository pattern: use when persistence queries are complex, reused, business-significant, need useful test fakes, or hide storage volatility. Avoid pass-through repositories that only rename ORM/database calls.
-
-## Module Interfaces
-
-A module interface is what other code may rely on: commands, endpoints, schemas, exported functions/classes, service methods, events, permissions, errors, side effects, ordering, idempotency, and invariants.
-
-It does not require a formal protocol or base class. Add formal abstraction only for multiple implementations, external boundaries, useful fakes, or a clear stability need.
-
-Callers and tests should not depend on storage layout, helper order, algorithms, retry mechanics, cache behavior, log text, prompts, or private state unless explicitly part of the contract.
+- Layering: use `UI / transport -> business workflow -> data access / infrastructure` as a default mental model. Keep business decisions out of UI handlers and persistence details out of business workflows.
+- Repository pattern: use when persistence behavior is complex, reused, business-significant, needs useful test adapters, or hides storage volatility. Avoid pass-through repositories that only rename storage calls.
+- Steering: read `steering/product.md`, `steering/tech.md`, and `steering/structure.md` when present.
 
 ## Interface-First Review
 
-Review/test public contracts before internals. `skip` deep review only when the change is internal-only, low risk, and protected by reliable behavior or contract tests.
+Review behavior through interfaces before internals. Use `skip` only when the change is internal-only, low risk, and protected by reliable behavior or contract tests.
 
-Use `full` review when a change affects public behavior, schemas, events, commands, security/auth/privacy, money, data integrity, migrations, concurrency, performance, operations, module boundaries, or weak/flaky/implementation-coupled tests.
+Use `full` when a change affects user-visible behavior, schemas, events, commands, auth/security/privacy, money, data integrity, migrations, concurrency, performance, operations, module seams, or weak/flaky/implementation-coupled tests.
+
+For review, keep two axes separate:
+
+- `Spec Review`: does the change implement the accepted task, design, implementation slice, and oracle proof without scope drift?
+- `Standards Review`: does the change follow `steering/`, module/interface principles, behavior-test guidance, and repo conventions?
 
 ## Output Lens
 
-When useful, explain:
+When useful, explain: `Module`, `Seam`, `Interface`, hidden `Implementation`, depth/leverage/locality, adapters, tests/proof, and complexity avoided.
 
-- owner: what owns the decision
-- public interface: what callers may rely on
-- hidden details: what must stay private
-- tests/proof: what protects the boundary
-- deep-review triggers: what raises risk
-- complexity avoided: what coupling or wrong abstraction is prevented
-
-This skill supports `design-doc` and review. Do not inflate small work just because richer abstractions are imaginable.
+This skill supports `design-doc`, implementation judgment, and review. Do not inflate small work just because richer architecture is imaginable.

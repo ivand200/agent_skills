@@ -16,7 +16,7 @@ If the request is a defect, regression, broken behavior, failing test, or curren
 - Capture facts only; do not choose the workflow route, pass gates, or advance stages.
 - Read the user request first.
 - Inspect repository evidence before asking questions when the answer should be discoverable.
-- Use `grill-me` for important questions that repository evidence cannot answer.
+- Use `grill-me` for blocking/important questions that repository evidence cannot answer.
 - Keep workflow status in `state.json`, not this artifact.
 - Write rules as observable system behavior when possible.
 - Write acceptance examples in Given/When/Then form.
@@ -50,6 +50,7 @@ If the request is a defect, regression, broken behavior, failing test, or curren
 ## Acceptance Examples
 
 ### AC-1: [Short Name]
+
 Covers: `REQ-1`
 
 Given ...
