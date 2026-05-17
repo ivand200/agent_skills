@@ -1,17 +1,17 @@
 ---
 name: module-interface-sketch
-description: Create bright, minimal sketch-style PNG diagrams of software modules, public interfaces, and important connections from steering docs such as `steering/structure.md` Module Interface Map. Use when Codex should visualize service architecture, module boundaries, interface contracts, or Ousterhout-style deep modules as an easy-to-understand image.
+description: Create bright, minimal sketch-style PNG diagrams of software modules, interfaces, and important connections from steering docs such as `steering/structure.md` Module Interface Map. Use when Codex should visualize module/interface architecture, seams, interface contracts, or deep modules as an easy-to-understand image.
 ---
 
 # Module Interface Sketch
 
-Create a one-page, sketch-style module interface diagram that helps someone understand a service through module names, public interfaces, and labeled connections.
+Create a one-page, sketch-style module interface diagram that helps someone understand a system through module names, interfaces, and labeled connections.
 
 Optimize for "understand the system in 20 seconds." Do not create database ERDs, file inventories, UML class diagrams, or implementation call graphs unless the user explicitly asks for them.
 
 ## Workflow
 
-1. Read `steering/structure.md` first, especially `Module Interface Map`.
+1. Read relevant `steering/` docs first, especially `steering/structure.md` and its `Module Interface Map`.
 2. If the map is missing or too vague, inspect only minimal durable evidence: README, entry points, routes/commands, manifests, and representative tests.
 3. Run `scripts/build_sketch_prompt.py` from the skill folder to draft a compact image prompt when `steering/structure.md` exists.
 4. Edit the generated prompt before image generation:
@@ -44,8 +44,8 @@ The helper produces a draft only. Always review it against the repo and the user
 - Make the diagram minimal, bright, and hand-drawn.
 - Use cards or sticky notes, not database tables.
 - Put the module name at the top of each card.
-- Put only public interface labels inside cards: endpoints, commands, events, exported operations, schemas, or service operations.
-- Label arrows with what crosses the boundary, such as `POST /api/chat/messages/stream`, `claim job`, or `ready chunk search`.
+- Put only interface labels inside cards: routes, commands, events, exported operations, schemas, or module operations.
+- Label arrows with what crosses the seam, such as `submit order`, `claim job`, or `ready chunk search`.
 - Use dashed arrows for async/background flows.
 - Prefer 2-4 words for responsibilities and arrow labels.
 - If a label cannot fit inside a card or arrow, shorten it or leave it in documentation.

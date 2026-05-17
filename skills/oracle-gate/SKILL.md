@@ -22,9 +22,9 @@ Skip when the change is tiny, internal-only, and already covered by reliable tes
 - Do not write tests here.
 - Do not plan one test per requirement.
 - Pick 1-3 critical claims.
-- Prefer public boundaries: API, command, service/use-case, module interface, or user-visible UI.
+- Prefer caller-visible seams: route, command, workflow entry point, module interface, or user-visible UI.
 - A proof is useful only if it would fail when important behavior is wrong.
-- If no good proof boundary exists, block and fix the design.
+- If no good proof seam exists, block and fix the design.
 - Default output is `## Oracle Gate` inside `design.md`.
 - Do not create `oracle-gate.md`.
 - Do not update `state.json` or `tasks.md`.
@@ -34,7 +34,7 @@ Skip when the change is tiny, internal-only, and already covered by reliable tes
 Use the simplest oracle that fits:
 
 - `specified`: expected behavior is known
-- `contract`: public API, invariant, schema, or permission must hold
+- `contract`: interface, invariant, schema, or permission must hold
 - `metamorphic`: exact output is hard, but a relation must hold
 - `human`: automation cannot decide; manual check is explicit
 
@@ -43,7 +43,7 @@ Use the simplest oracle that fits:
 ```md
 ## Oracle Gate
 
-| Claim | Oracle | Boundary | Check | Failure it catches |
+| Claim | Oracle | Seam | Check | Failure it catches |
 | --- | --- | --- | --- | --- |
 | ... | `specified | contract | metamorphic | human` | ... | ... | ... |
 
